@@ -1,0 +1,60 @@
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+public class MenuTreeUtil {
+
+    public static List<MenuTree> buildMenuTree(List<MenuTree> menuList){
+
+        MenuTree root = new MenuTree();
+        root.setName("根目录");
+
+        //组装map数据
+        Map<Long,MenuTree> map = new HashMap<>();
+        for(MenuTree menuTree : menuList){
+            map.put(menuTree.getId(),menuTree);
+        }
+
+        //组装树形结构
+        for(MenuTree menu : menuList){
+            if(menu.getParentId() != null && menu.getParentId() != -1){
+                map.get(menu.getParentId()).getChildren().add(menu);
+            }else{
+                root.getChildren().add(menu);
+            }
+        }
+        return root.getChildren();
+    }
+
+    public static List<MenuTree> buildMenuTreeSecond(List<MenuTree> menuList){
+
+        MenuTree root = new MenuTree();
+        root.setName("根目录");
+
+        for( MenuTree menuTree : menuList){
+            if(menuTree.getParentId() == null || menuTree.getParentId() == -1){
+                root.getChildren().add(menuTree);
+            }
+            for(MenuTree menu : menuList){
+                if(menu.getParentId() == menuTree.getId()){
+                    menuTree.getChildren().add(menu);
+                }
+            }
+        }
+        return root.getChildren();
+    }
+    public static void printMenuTree(List<MenuTree> menuTrees,int step){
+        for(MenuTree menuTree : menuTrees){
+            print(menuTree.getName(),step);
+            printMenuTree(menuTree.getChildren(),step + 2 );
+        }
+    }
+
+    private static void print(String name,int step){
+        for(int i = 0 ; i < step ; i++){
+            System.out.print("--");
+        }
+        System.out.println(name);
+    }
+}
